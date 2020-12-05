@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">我是一个 app 应用</div>
+
+    <script>
+        document.getElementById = (function (func) {
+            // 修正 this ，修正回 document
+            return function () {
+                return func.apply(document,arguments)
+            }
+        })(document.getElementById)
+
+        const getId = document.getElementById
+        console.log(getId('app'))
+    </script>
+</body>
+</html>

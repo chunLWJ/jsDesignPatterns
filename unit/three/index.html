@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>高阶函数</title>
+</head>
+<body>
+    <div id="app">我是一个网页应用</div>
+
+<script>
+
+    // 函数节流
+    var throttle = function (fn,interval) {
+        var _self = fn,
+            timer,
+            firstTime = true
+
+        return function (){
+            var args = arguments,
+                _me = this;
+            if (firstTime) {
+                _self.apply(_me,args)
+                return firstTime = false
+            }
+
+            if (timer)  return false
+            timer = setTimeout(() => {
+                clearTimeout(timer)
+                timer = null;
+                _self.apply(_me,args)
+            },interval || 500)
+        }
+    }
+
+    window.onresize = throttle(function (){
+        console.log('1')
+    },500)
+
+
+    // 分时函数
+    var timeChunk = function (ary,fn,count) {
+        var t,
+            len = ary.length;
+        var start = function (){
+            for (var i=0; i<Math.min(count || 1, len); i++) {
+                var obj = ary.shift();
+                fn(obj)
+            }
+        }
+
+        return function (){
+            t = setInterval(function (){
+                if (ary.length === 0) {
+                    return clearInterval(t)
+                }
+                start();
+            },200)
+        }
+    }
+    var ary = []
+    for (var i=1; i<= 1000; i++) {
+        ary.push(i)
+    }
+    var renderFriendList = timeChunk(ary,function (n) {
+        var div = document.createElement('div')
+        div.innerHTML = n;
+        document.body.appendChild(div)
+    },8)
+    renderFriendList()
+
+    var addEvent = function (ele,type,handle) {
+        if (window.addEventListener) {
+            console.log('新浏览器绑定事件')
+            // 重新赋值后，上面的 if else if 旧不会再执行到了
+            addEvent = function (ele,type,handle) {
+                ele.addEventListener(type,handle,false)
+            }
+        } else if (window.attachEvent) {
+            console.log('旧浏览器绑定事件')
+            addEvent = function (ele,type,handle) {
+                ele.attachEvent('on' + type, handle)
+            }
+        }
+        addEvent(ele,type,handle)
+    }
+    addEvent(document.getElementById('app'),'click',function (){
+        console.log('点击事件')
+    })
+</script>
+</body>
+</html>
