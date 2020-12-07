@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>虚拟代理 惰性加载</title>
+</head>
+<body>
+
+<script>
+
+    // 虚拟代理，延迟执行一些方法
+    let miniConsole = (function (){
+        const cache = []
+        const handler = function (ev) {
+            console.log('ev',ev)
+            if (ev.key === "F12") {
+                const script = document.createElement('script')
+                script.onload = function () {
+                    cache.forEach(fn => fn()) // 加载完成执行所有的方法
+                }
+                script.src = 'miniConsole.js'
+                // 真正执行的方法都让 miniConsole 重新定义
+                document.getElementsByTagName('head')[0].appendChild(script)
+                document.body.removeEventListener('keydown',handler)
+            }
+        }
+
+        document.body.addEventListener('keydown',handler,false)
+
+        return {
+            log: function (){
+                let args = arguments;
+                cache.push(function (){
+                    return miniConsole.log.apply(miniConsole,args)
+                })
+            }
+        }
+    })()
+
+    miniConsole.log(11)
+    miniConsole.log(11)
+    miniConsole.log(11)
+
+</script>
+</body>
+</html>

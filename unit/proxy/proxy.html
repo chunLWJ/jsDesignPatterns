@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>代理图片</title>
+</head>
+<body>
+
+<script>
+
+    const myImage = (function (){
+        var imgNode = document.createElement('img')
+        document.body.appendChild(imgNode)
+
+        return function (src) {
+            imgNode.src = src
+        }
+    })()
+
+    const proxyImage = (function (){
+        var img = new Image()
+        img.onload = function (){
+            myImage(this.src)
+        }
+
+        return function (src) {
+            myImage('./Loading.png')
+            img.src = src
+        }
+    })()
+    proxyImage('./check.png')
+    // 这里使用的是本地图片，所以疯狂刷新才能看到效果
+
+</script>
+</body>
+</html>
