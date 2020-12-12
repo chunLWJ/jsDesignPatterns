@@ -203,7 +203,7 @@ Event.create('namespace2').listen('click2',function (aa) {
 // 移除 aa 监听
 Event.create('namespace2').remove('click2')
 
-Event.create('namespace2').listen('click2',function (bb) {
+Event.create('namespace2').listen('click2',function click2(bb) {
     console.log('bb',bb)
 })
 Event.create('namespace2').trigger('click2',2) // 触发 bb 监听，aa被移除了
