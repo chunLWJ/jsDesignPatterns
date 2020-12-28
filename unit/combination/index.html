@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组合模式</title>
+</head>
+<body>
+
+    <button id="button">超级万能遥控器</button>
+    <script>
+        const MacroCommand = function () {
+            return {
+                commandsList: [],
+                add: function(command) {
+                    this.commandsList.push(command)
+                },
+                execute: function(){
+                    this.commandsList.forEach(command => command.execute())
+                }
+            }
+        };
+        const openAcCommand = {
+            execute: () => console.log('打开空调')
+        };
+
+        // 他打开电视的时候必然会打开音响
+        const openTvCommand = {
+            execute: () => console.log('打开电视')
+        };
+        const openSoundCommand = {
+            execute: () => console.log('打开音响')
+        };
+        const marcoCommand1 = MacroCommand();
+        marcoCommand1.add(openTvCommand)
+        marcoCommand1.add(openSoundCommand)
+
+        // 他关门肯定会打开电脑并登录QQ
+        const closeDoorCommand = {
+            execute: () => console.log('关门')
+        };
+        const openPcCommand = {
+            execute: () => console.log('开电脑')
+        };
+        const openQQCommand = {
+            execute: () => console.log('登录QQ')
+        };
+        const marcoCommand2 = MacroCommand();
+        marcoCommand2.add(closeDoorCommand)
+        marcoCommand2.add(openPcCommand)
+        marcoCommand2.add(openQQCommand)
+
+        const macroCommand = MacroCommand();
+        macroCommand.add(openAcCommand)
+        macroCommand.add(marcoCommand1)
+        macroCommand.add(marcoCommand2)
+
+        console.log(macroCommand);
+        (function (command){
+            document.getElementById('button').onclick = function (){
+                command.execute()
+            }
+
+        })(macroCommand)
+    </script>
+</body>
+</html>
