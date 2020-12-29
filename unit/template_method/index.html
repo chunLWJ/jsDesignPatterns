@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>调料</title>
+</head>
+<body>
+
+    <button id="button">点饮料</button>
+<script>
+    const Beverage = function (){}
+
+    Beverage.prototype.boilWater = () => console.log('把水煮沸')
+    Beverage.prototype.brew = () => {
+        throw new Error('子类必须重写 brew 方法')
+    }
+    Beverage.prototype.pourInCup = () => {
+        throw new Error('子类必须重写 pourInCup 方法')
+    }
+    Beverage.prototype.addCondiments = () => {
+        throw new Error('子类必须重写 addCondiments 方法')
+    }
+    Beverage.prototype.customerWantsCondiments = () => true // 默认需要调料
+
+    Beverage.prototype.init = function() {
+        this.boilWater()
+        this.brew()
+        this.pourInCup()
+        if (this.customerWantsCondiments()) {
+            this.addCondiments()
+        }
+    }
+
+    const CoffeeWithHook = function(){}
+    CoffeeWithHook.prototype = new Beverage()
+    CoffeeWithHook.prototype.brew = function () {
+        console.log('用沸水冲泡咖啡')
+    }
+    CoffeeWithHook.prototype.pourInCup = function () {
+        console.log('把咖啡倒进杯子')
+    }
+    CoffeeWithHook.prototype.addCondiments = function () {
+        console.log('加糖和牛奶')
+    }
+    CoffeeWithHook.prototype.customerWantsCondiments = function () {
+        return window.confirm('请问需要调料吗？')
+    }
+
+    document.getElementById('button').onclick = function (){
+        let coffeeWithHook = new CoffeeWithHook();
+        coffeeWithHook.init()
+    }
+</script>
+</body>
+</html>
